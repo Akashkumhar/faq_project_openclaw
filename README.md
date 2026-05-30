@@ -1,4 +1,4 @@
-# Student Support & FAQ Management System — SPEC.md
+# Student Support & FAQ Management System
 
 ## 1. Concept & Vision
 
@@ -6,7 +6,7 @@ A polished, enterprise-grade Student Support portal built on the MERN stack — 
 
 **Personality:** Professional, calm, accessible — like a well-organized university help desk.
 
----
+--- 
 
 ## 2. Design Language
 
@@ -75,9 +75,8 @@ A polished, enterprise-grade Student Support portal built on the MERN stack — 
 
 ### Project Structure
 ```
-E:\faq_project\
-├── SPEC.md
-├── .env
+faq_project_openclaw/
+├── README.md
 ├── backend/
 │   ├── package.json
 │   ├── server.js
@@ -195,8 +194,8 @@ E:\faq_project\
   tags: [String],
   status: Enum ['draft', 'published', 'archived'] (default: published),
   viewCount: Number (default: 0),
-  helpful: Number (default: 0)       // thumbs up
-  notHelpful: Number (default: 0)    // thumbs down
+  helpful: Number (default: 0),       // thumbs up
+  notHelpful: Number (default: 0),    // thumbs down
   createdBy: ObjectId (ref: User),
   reviewedBy: ObjectId (ref: User),
   publishedAt: Date,
@@ -214,12 +213,12 @@ E:\faq_project\
   category: String (same as FAQ categories),
   priority: Enum ['low', 'medium', 'high', 'urgent'] (default: medium),
   status: Enum [
-    'open',           // just raised
-    'assigned',       // assigned to support staff
+    'open',             // just raised
+    'assigned',         // assigned to support staff
     'pending_approval', // solution submitted, awaiting review
-    'resolved',       // admin approved
-    'rejected',       // solution rejected
-    'closed'          // closed by student or admin
+    'resolved',         // admin approved
+    'rejected',         // solution rejected
+    'closed'            // closed by student or admin
   ] (default: open),
   raisedBy: ObjectId (ref: User),
   assignedTo: ObjectId (ref: User, optional),

@@ -1,7 +1,7 @@
 {
   "name": "faq-backend",
   "version": "1.0.0",
-  "description": "Student Support & FAQ Management System",
+  "description": "User Support & FAQ Management System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

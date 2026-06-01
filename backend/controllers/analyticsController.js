@@ -95,7 +95,7 @@ exports.getStatusBreakdown = asyncHandler(async (req, res) => {
 // @desc    Top users by solutions approved
 // @access  Private (admin)
 exports.getTopContributors = asyncHandler(async (req, res) => {
-  const top = await User.find({ isActive: true, role: 'student' })
+  const top = await User.find({ isActive: true, role: { $in: ['user', 'student'] } })
     .select('name stats.reputationPoints stats.solutionsApproved stats.solutionsSubmitted')
     .sort({ 'stats.solutionsApproved': -1 })
     .limit(10);

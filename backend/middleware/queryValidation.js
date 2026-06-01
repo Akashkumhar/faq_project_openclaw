@@ -48,7 +48,7 @@ const spamAndQualityCheck = async (req, _res, next) => {
   }
 
   // Rate limit: max 5 queries per user per 24h
-  if (req.user && req.user.role === ROLES.STUDENT) {
+  if (req.user && req.user.role === ROLES.USER) {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const count = await Query.countDocuments({
       raisedBy: req.user._id,

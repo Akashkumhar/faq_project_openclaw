@@ -66,7 +66,7 @@ export default function LoginPage() {
       <div className="auth-card">
         <div className="auth-logo">❓</div>
         <div className="auth-title">FAQ Hub</div>
-        <div className="auth-sub">Student Support & Knowledge Base</div>
+        <div className="auth-sub">User Support & Knowledge Base</div>
         {error && <div className="alert alert-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">

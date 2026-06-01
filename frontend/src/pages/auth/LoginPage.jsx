@@ -29,7 +29,7 @@ export default function LoginPage() {
       <div className="auth-card">
         <div className="auth-logo">❓</div>
         <div className="auth-title">FAQ Hub</div>
-        <div className="auth-sub">Student Support & Knowledge Base</div>
+        <div className="auth-sub">User Support & Knowledge Base</div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -49,7 +49,7 @@ export default function LoginPage() {
 
         <div className="auth-footer">
           Don't have an account?{' '}
-          <Link to="/register">Register as Student</Link>
+          <Link to="/register">Register as User</Link>
         </div>
       </div>
     </div>

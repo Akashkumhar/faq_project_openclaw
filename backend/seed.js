@@ -15,6 +15,11 @@ async function seed() {
   await mongoose.connect(MONGO_URI);
   console.log('Connected to MongoDB');
 
+  const migrated = await User.updateMany({ role: 'student' }, { $set: { role: 'user' } });
+  if (migrated.modifiedCount > 0) {
+    console.log(`Migrated ${migrated.modifiedCount} user(s) from role "student" to "user"`);
+  }
+
   // Create admin user
   let admin = await User.findOne({ email: 'admin@faq.edu' });
   if (!admin) {

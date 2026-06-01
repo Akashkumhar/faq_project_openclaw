@@ -1,11 +1,11 @@
 const ROLES = {
-  STUDENT: 'student',
+  USER: 'user',
   SUPPORT_STAFF: 'support_staff',
   ADMIN: 'admin',
 };
 
 const ROLE_HIERARCHY = {
-  [ROLES.STUDENT]: 1,
+  [ROLES.USER]: 1,
   [ROLES.SUPPORT_STAFF]: 2,
   [ROLES.ADMIN]: 3,
 };

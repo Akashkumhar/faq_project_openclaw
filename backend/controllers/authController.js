@@ -16,7 +16,7 @@ const generateTokens = (userId) => {
 };
 
 // @route   POST /api/auth/register
-// @desc    Register a new student account
+// @desc    Register a new user account
 // @access  Public
 exports.register = asyncHandler(async (req, res) => {
   const { name, email, password, department } = req.body;
@@ -28,7 +28,7 @@ exports.register = asyncHandler(async (req, res) => {
     name,
     email: email.toLowerCase(),
     password,
-    role: ROLES.STUDENT,
+    role: ROLES.USER,
     department: department || '',
   });
 

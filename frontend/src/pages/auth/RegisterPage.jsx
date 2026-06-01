@@ -30,7 +30,7 @@ export default function RegisterPage() {
       <div className="auth-card">
         <div className="auth-logo">❓</div>
         <div className="auth-title">Create Account</div>
-        <div className="auth-sub">Join the Student Support Hub</div>
+        <div className="auth-sub">Join the User Support Hub</div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

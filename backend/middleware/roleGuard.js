@@ -13,6 +13,6 @@ const requireRole = (...roles) => (req, res, next) => {
 // Shorthand middleware creators
 const adminOnly = requireRole(ROLES.ADMIN);
 const staffOrAdmin = requireRole(ROLES.SUPPORT_STAFF, ROLES.ADMIN);
-const authenticated = requireRole(ROLES.STUDENT, ROLES.SUPPORT_STAFF, ROLES.ADMIN);
+const authenticated = requireRole(ROLES.USER, ROLES.SUPPORT_STAFF, ROLES.ADMIN);
 
 module.exports = { requireRole, adminOnly, staffOrAdmin, authenticated };

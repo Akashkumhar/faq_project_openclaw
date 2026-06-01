@@ -1,8 +1,8 @@
-# Student Support & FAQ Management System — SPEC.md
+# User Support & FAQ Management System — SPEC.md
 
 ## 1. Concept & Vision
 
-A polished, enterprise-grade Student Support portal built on the MERN stack — designed to feel like something a real university would use. It's calm, focused, and trustworthy: clean surfaces, readable typography, and zero clutter. The system empowers students to self-serve through a rich FAQ knowledge base, while support staff manage everything through a protected admin dashboard with real-time stats, query tracking, and one-click FAQ publishing.
+A polished, enterprise-grade User Support portal built on the MERN stack — designed to feel like something a real university would use. It's calm, focused, and trustworthy: clean surfaces, readable typography, and zero clutter. The system empowers users to self-serve through a rich FAQ knowledge base, while support staff manage everything through a protected admin dashboard with real-time stats, query tracking, and one-click FAQ publishing.
 
 **Personality:** Professional, calm, accessible — like a well-organized university help desk.
 
@@ -85,7 +85,7 @@ E:\faq_project\
 │   │   └── db.js
 │   ├── middleware/
 │   │   ├── auth.js          — JWT verification
-│   │   ├── roleGuard.js     — Admin/student role check
+│   │   ├── roleGuard.js     — Admin/user role check
 │   │   ├── errorHandler.js  — Global error handler
 │   │   └── validate.js      — Request validation
 │   ├── models/
@@ -150,8 +150,8 @@ E:\faq_project\
 │           ├── auth/
 │           │   ├── LoginPage.jsx
 │           │   └── RegisterPage.jsx
-│           ├── student/
-│           │   ├── DashboardPage.jsx
+│           ├── user/
+│           │   ├── UserDashboardPage.jsx
 │           │   ├── FAQBrowsePage.jsx
 │           │   ├── RaiseQueryPage.jsx
 │           │   └── MyQueriesPage.jsx
@@ -174,7 +174,7 @@ E:\faq_project\
   name: String (required, 2-50 chars),
   email: String (required, unique, lowercase),
   password: String (required, hashed, min 8),
-  role: Enum ['student', 'support_staff', 'admin'] (default: 'student'),
+  role: Enum ['user', 'support_staff', 'admin'] (default: 'user'),
   avatar: String (URL, optional),
   department: String (optional),
   isActive: Boolean (default: true),
@@ -219,7 +219,7 @@ E:\faq_project\
     'pending_approval', // solution submitted, awaiting review
     'resolved',       // admin approved
     'rejected',       // solution rejected
-    'closed'          // closed by student or admin
+    'closed'          // closed by user or admin
   ] (default: open),
   raisedBy: ObjectId (ref: User),
   assignedTo: ObjectId (ref: User, optional),
@@ -260,7 +260,7 @@ E:\faq_project\
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
 | POST | `/auth/login` | Login | Public |
-| POST | `/auth/register` | Register (students only) | Public |
+| POST | `/auth/register` | Register (users only) | Public |
 | POST | `/auth/logout` | Logout | Auth |
 | POST | `/auth/refresh` | Refresh access token | Public |
 | GET | `/auth/me` | Get current user | Auth |
@@ -314,11 +314,11 @@ E:\faq_project\
 
 ## 6. Pages & Features
 
-### Student Pages
+### User Pages
 - **Dashboard:** Greeting, quick stats (my open queries, resolved this week), recent announcements, popular FAQs
 - **FAQ Browse:** Searchable, filterable by category, expandable accordion, helpful/not helpful voting
 - **Raise Query:** Form with question, description, category, priority — submitted instantly
-- **My Queries:** Table of all queries raised by the student with status tracking
+- **My Queries:** Table of all queries raised by the user with status tracking
 
 ### Admin/Staff Pages
 - **Admin Dashboard:** Live stats (total queries, open, resolved today, FAQ count), recent activity feed, charts placeholder
@@ -329,7 +329,7 @@ E:\faq_project\
 
 ### Auth Pages
 - **Login:** Email + password, role indicator, error handling
-- **Register:** Name + email + password + department (students only)
+- **Register:** Name + email + password + department (users only)
 
 ---
 
@@ -402,7 +402,7 @@ This section details the step-by-step plan for implementing all advanced feature
 
 ### 9.1 FAQ Voting System (Helpful / Not Helpful)
 
-**Goal:** Allow authenticated students to vote on FAQs as helpful or not helpful — once per FAQ per user — with live vote counts displayed.
+**Goal:** Allow authenticated users to vote on FAQs as helpful or not helpful — once per FAQ per user — with live vote counts displayed.
 
 #### Schema Changes
 - **FAQ model** already has `helpful` and `notHelpful` number fields.
@@ -448,7 +448,7 @@ This section details the step-by-step plan for implementing all advanced feature
 
 ### 9.2 Duplicate Query Detection
 
-**Goal:** Before a student submits a new query, detect semantically similar existing FAQs or open queries and suggest them to reduce duplicates.
+**Goal:** Before a user submits a new query, detect semantically similar existing FAQs or open queries and suggest them to reduce duplicates.
 
 #### Strategy
 Use **keyword + category matching** on the server side (no external ML dependency) with a relevance score, optionally augmented with a simple trigram similarity function.
@@ -471,7 +471,7 @@ Use **keyword + category matching** on the server side (no external ML dependenc
 1. In `RaiseQueryPage.jsx`, add a debounced (400ms) call to `/queries/similar` triggered after the user types ≥ 20 characters in the question field.
 2. Render a dismissible "Similar questions found" banner below the input with links to matching FAQs/queries.
 3. If a highly similar FAQ is found (score > 0.8), show a soft warning: _"This might already be answered — review before submitting."_
-4. Allow the student to proceed anyway with a single click.
+4. Allow the user to proceed anyway with a single click.
 
 ---
 
@@ -500,7 +500,7 @@ Rule-based keyword mapping (no ML required) defined in a configuration file.
 #### Frontend Steps
 1. In `RaiseQueryPage.jsx`, call `/queries/classify` on text change (debounced 500ms).
 2. Auto-select the detected category in the Category dropdown; show a small "auto-detected" chip next to it.
-3. The chip is clickable to clear and let the student override manually.
+3. The chip is clickable to clear and let the user override manually.
 
 ---
 
@@ -552,7 +552,7 @@ export function isSpam(text) {
    - Immediate error if the text matches spam patterns (client-side copy of BLOCKED_PHRASES).
    - Disable submit button and show inline message for invalid inputs.
 2. Show server-side validation errors returned from API inline below each field.
-3. After a rejected submission, don't clear the form — allow the student to correct.
+3. After a rejected submission, don't clear the form — allow the user to correct.
 
 ---
 
@@ -570,14 +570,14 @@ export function isSpam(text) {
 
 ### 9.6 Personalized User Dashboard
 
-**Goal:** Give each student a dynamic, data-rich personal dashboard tailored to their activity.
+**Goal:** Give each user a dynamic, data-rich personal dashboard tailored to their activity.
 
 #### New API Endpoints
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/dashboard/my-stats` | Student's personal stats | Auth (Student) |
-| GET | `/dashboard/my-activity` | Timeline of student's actions | Auth (Student) |
-| GET | `/dashboard/recommended-faqs` | FAQs relevant to student's department + past queries | Auth (Student) |
+| GET | `/dashboard/my-stats` | User's personal stats | Auth (User) |
+| GET | `/dashboard/my-activity` | Timeline of user's actions | Auth (User) |
+| GET | `/dashboard/recommended-faqs` | FAQs relevant to user's department + past queries | Auth (User) |
 
 #### Backend Steps
 1. In `dashboardController.js`, add `getMyStats`:
@@ -587,11 +587,11 @@ export function isSpam(text) {
    - Streak: consecutive days with activity.
 2. Add `getMyActivity` returning last 20 events (query raised, vote cast, solution submitted, badge earned) in reverse-chronological order.
 3. Add `getRecommendedFAQs`:
-   - Pull FAQs from the student's `department` category + most-viewed FAQs not yet seen by this student.
+   - Pull FAQs from the user's `department` category + most-viewed FAQs not yet seen by this user.
    - Return top 6.
 
 #### Frontend Steps
-1. Redesign `DashboardPage.jsx` (student view) with:
+1. Redesign `UserDashboardPage.jsx` (user view) with:
    - **Welcome banner** with user name, avatar, department, and current streak.
    - **Stats row:** Open Queries · Resolved · FAQs Voted · Reputation Points.
    - **Activity timeline** — scrollable, icon-coded event list.
@@ -641,7 +641,7 @@ export function isSpam(text) {
 
 ### 9.8 Community Discussion Section
 
-**Goal:** Allow students to collaboratively discuss queries, share unofficial tips, and upvote helpful community responses.
+**Goal:** Allow users to collaboratively discuss queries, share unofficial tips, and upvote helpful community responses.
 
 #### New Models
 
@@ -726,7 +726,7 @@ export function isSpam(text) {
 1. Display reputation score in user's Header dropdown and Profile page.
 2. On Discussion posts, show author's reputation next to their name.
 3. Verified posts get a green "✓ Verified Solution" chip.
-4. Reputation history page (accessible from student dashboard) with a point log timeline.
+4. Reputation history page (accessible from user dashboard) with a point log timeline.
 
 ---
 
@@ -747,7 +747,7 @@ export function isSpam(text) {
 #### New API Endpoints
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/leaderboard` | Top-50 students by reputation | Public |
+| GET | `/leaderboard` | Top-50 users by reputation | Public |
 | GET | `/leaderboard/monthly` | Monthly leaderboard reset | Public |
 | GET | `/users/:id/badges` | User badge collection | Auth |
 
@@ -762,7 +762,7 @@ export function isSpam(text) {
    - Top-3 podium with gold/silver/bronze styling.
    - Ranked list below with avatar, name, department, reputation, badge icons.
    - Toggle: All-Time / This Month.
-2. In student dashboard, show the student's current rank and points to next badge.
+2. In user dashboard, show the user's current rank and points to next badge.
 3. Badge showcase on profile page — earned badges solid, unearned badges greyed out with progress hint.
 4. Animate badge unlock with a confetti burst (canvas-confetti or pure CSS keyframes).
 
@@ -909,8 +909,8 @@ Phase 5 — Polish (Week 5–6)
 #### Frontend (new pages)
 | File | Purpose |
 |---|---|
-| `pages/student/LeaderboardPage.jsx` | Public leaderboard |
-| `pages/student/ProfilePage.jsx` | User profile, badges, reputation history |
+| `pages/user/LeaderboardPage.jsx` | Public leaderboard |
+| `pages/user/ProfilePage.jsx` | User profile, badges, reputation history |
 | `pages/admin/AnalyticsDashboardPage.jsx` | Analytics charts & tables |
 | `components/discussion/DiscussionThread.jsx` | Nested discussion viewer |
 | `components/discussion/DiscussionInput.jsx` | Discussion post form |
@@ -929,7 +929,7 @@ Phase 5 — Polish (Week 5–6)
 
 ### 10.1 Overview & Goal
 
-**Goal:** Replace simple keyword matching with a search layer that understands what the user *means*, not just what they *typed*. A student asking _"I can't pay my dues this month"_ should surface FAQs about fee deadlines, payment extensions, and scholarship options — even though none of those words appear in the query.
+**Goal:** Replace simple keyword matching with a search layer that understands what the user *means*, not just what they *typed*. A user asking _"I can't pay my dues this month"_ should surface FAQs about fee deadlines, payment extensions, and scholarship options — even though none of those words appear in the query.
 
 **Scope:** Applies to:
 - The global FAQ search bar (Header component)
@@ -1387,10 +1387,10 @@ The `buildEmbeddings.js` backfill script must be run **once** immediately after 
 
 ### 11.1 Overview & Goal
 
-**Goal:** Display a ranked list of the **top 10 most helpful FAQs** — sorted by their `helpful` vote count descending — as a dedicated, always-visible section on the student dashboard and FAQ Browse page. This gives students instant access to the community's most trusted answers without searching.
+**Goal:** Display a ranked list of the **top 10 most helpful FAQs** — sorted by their `helpful` vote count descending — as a dedicated, always-visible section on the user dashboard and FAQ Browse page. This gives users instant access to the community's most trusted answers without searching.
 
 **Appears on:**
-- Student `DashboardPage.jsx` — as a "Most Helpful FAQs" widget panel
+- User `UserDashboardPage.jsx` — as a "Most Helpful FAQs" widget panel
 - `FAQBrowsePage.jsx` — as a sticky sidebar or top-pinned section (above the full FAQ list)
 - Admin `FAQManagementPage.jsx` — as a read-only reference column showing the live top-10 ranking
 
@@ -1614,9 +1614,9 @@ In `index.css`, add rank badge tokens:
 .rank-badge--normal { background: var(--surface-secondary); color: var(--text-secondary); }
 ```
 
-#### Step 3 — Place on Student `DashboardPage.jsx`
+#### Step 3 — Place on User `UserDashboardPage.jsx`
 
-Add `<TopFAQsWidget />` to the lower section of the student dashboard, below the stats row and above the activity timeline:
+Add `<TopFAQsWidget />` to the lower section of the user dashboard, below the stats row and above the activity timeline:
 
 ```
 DashboardPage layout (updated):
@@ -1676,7 +1676,7 @@ When "Most Helpful" is selected:
 The `TopFAQsWidget` supports a category prop so it can be scoped to a specific department:
 
 ```jsx
-// On the student dashboard, auto-pass the student's department as the category
+// On the user dashboard, auto-pass the user's department as the category
 <TopFAQsWidget category={user.department} />
 
 // On the FAQ Browse page, sync with the active category filter
@@ -1746,7 +1746,7 @@ Step 13 Test — Verify route order (top before :id), cache TTL, rank tie-breaki
 |---|---|
 | `controllers/faqController.js` | Add `getTopFAQs` handler + in-memory cache |
 | `routes/faqRoutes.js` | Register `GET /faqs/top` before `GET /faqs/:id` |
-| `pages/student/DashboardPage.jsx` | Add `<TopFAQsWidget />` below stats row |
-| `pages/student/FAQBrowsePage.jsx` | Add compact sidebar widget + "Most Helpful" sort option |
+| `pages/user/UserDashboardPage.jsx` | Add `<TopFAQsWidget />` below stats row |
+| `pages/user/FAQBrowsePage.jsx` | Add compact sidebar widget + "Most Helpful" sort option |
 | `pages/admin/FAQManagementPage.jsx` | Add live top-10 mini-panel + helpfulness insight badges |
 | `index.css` | Add `.rank-badge` variants (gold, silver, bronze, normal) |

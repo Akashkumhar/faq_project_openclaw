@@ -69,7 +69,7 @@ exports.getQueries = asyncHandler(async (req, res) => {
   const { status, category, priority } = req.query;
   const filter = {};
 
-  if (req.user?.role === ROLES.STUDENT) {
+  if (req.user?.role === ROLES.USER || req.user?.role === 'student') {
     filter.raisedBy = req.user._id;
   }
 
@@ -99,7 +99,7 @@ exports.getQueryById = asyncHandler(async (req, res) => {
 
   if (!query) throw ApiError.notFound('Query not found');
 
-  if (req.user?.role === ROLES.STUDENT && query.raisedBy._id.toString() !== req.user._id.toString()) {
+  if ((req.user?.role === ROLES.USER || req.user?.role === 'student') && query.raisedBy._id.toString() !== req.user._id.toString()) {
     throw ApiError.forbidden('You can only view your own queries');
   }
 
@@ -257,13 +257,13 @@ exports.rejectSolution = asyncHandler(async (req, res) => {
 });
 
 // @route   PUT /api/queries/:id/close
-// @desc    Close a query (student who raised it or staff+)
+// @desc    Close a query (user who raised it or staff+)
 // @access  Private (owner or staff+)
 exports.closeQuery = asyncHandler(async (req, res) => {
   const query = await Query.findById(req.params.id);
   if (!query) throw ApiError.notFound('Query not found');
 
-  if (req.user?.role === ROLES.STUDENT && query.raisedBy?.toString() !== req.user._id.toString()) {
+  if ((req.user?.role === ROLES.USER || req.user?.role === 'student') && query.raisedBy?.toString() !== req.user._id.toString()) {
     throw ApiError.forbidden('You can only close your own queries');
   }
 

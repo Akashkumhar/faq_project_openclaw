@@ -5,16 +5,16 @@ mongoose.connect('mongodb://localhost:27017/student_support').then(async () => {
   console.log('All users:');
   all.forEach(u => console.log('  _id:', u._id.toString(), 'email:', u.email, 'role:', u.role, 'name:', u.name));
 
-  const studentAdmin = await User.findOne({ email: 'admin@faq.edu', role: 'student' });
+  const legacyUserAdmin = await User.findOne({ email: 'admin@faq.edu', role: { $in: ['student', 'user'] } });
   const realAdmin = await User.findOne({ email: 'admin@faq.edu', role: 'admin' });
 
-  if (studentAdmin && realAdmin) {
-    console.log('Deleting duplicate student user:', studentAdmin._id.toString());
-    await User.deleteOne({ _id: studentAdmin._id });
-  } else if (!realAdmin && studentAdmin) {
-    studentAdmin.role = 'admin';
-    await studentAdmin.save();
-    console.log('Fixed role to admin:', studentAdmin._id.toString());
+  if (legacyUserAdmin && realAdmin) {
+    console.log('Deleting duplicate user account:', legacyUserAdmin._id.toString());
+    await User.deleteOne({ _id: legacyUserAdmin._id });
+  } else if (!realAdmin && legacyUserAdmin) {
+    legacyUserAdmin.role = 'admin';
+    await legacyUserAdmin.save();
+    console.log('Fixed role to admin:', legacyUserAdmin._id.toString());
   } else if (realAdmin) {
     console.log('Real admin already exists:', realAdmin._id.toString());
   }

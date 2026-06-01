@@ -7,7 +7,7 @@ const asyncHandler = require('../utils/asyncHandler');
 // @desc    Top 20 users by reputation points
 // @access  Private
 exports.getLeaderboard = asyncHandler(async (req, res) => {
-  const top = await User.find({ isActive: true, role: 'student' })
+  const top = await User.find({ isActive: true, role: { $in: ['user', 'student'] } })
     .select('name avatar department stats.reputationPoints stats.queriesAsked stats.solutionsSubmitted stats.solutionsApproved')
     .sort({ 'stats.reputationPoints': -1, 'stats.solutionsApproved': -1 })
     .limit(20);
@@ -35,7 +35,7 @@ exports.getMyReputation = asyncHandler(async (req, res) => {
   // Find rank
   const rank = await User.countDocuments({
     isActive: true,
-    role: 'student',
+    role: { $in: ['user', 'student'] },
     'stats.reputationPoints': { $gt: user.stats?.reputationPoints || 0 },
   }) + 1;
 
@@ -89,7 +89,7 @@ exports.getGlobalStats = asyncHandler(async (req, res) => {
   const [totalPoints, avgPoints, topUser, distribution] = await Promise.all([
     User.aggregate([{ $group: { _id: null, total: { $sum: '$stats.reputationPoints' } } }]),
     User.aggregate([{ $group: { _id: null, avg: { $avg: '$stats.reputationPoints' } } }]),
-    User.findOne({ isActive: true, role: 'student' }).sort({ 'stats.reputationPoints': -1 }).select('name stats.reputationPoints'),
+    User.findOne({ isActive: true, role: { $in: ['user', 'student'] } }).sort({ 'stats.reputationPoints': -1 }).select('name stats.reputationPoints'),
     User.aggregate([
       { $bucket: { groupBy: '$stats.reputationPoints', boundaries: [0, 50, 200, 500, 1000, Infinity], default: '1000+', countsByBranch: { low: {}, mid: {}, high: {}, veryHigh: {}, top: {} } } },
     ]),

@@ -13,9 +13,9 @@ exports.getStats = asyncHandler(async (req, res) => {
   const startOfWeek = new Date(startOfDay);
   startOfWeek.setDate(startOfWeek.getDate() - 7);
 
-  const isStudent = req.user.role === 'student';
+  const isUser = req.user.role === 'user' || req.user.role === 'student';
 
-  const baseQuery = isStudent ? { raisedBy: req.user._id } : {};
+  const baseQuery = isUser ? { raisedBy: req.user._id } : {};
 
   const [
     totalQueries,
@@ -77,8 +77,8 @@ exports.getStats = asyncHandler(async (req, res) => {
 // @desc    Recent queries for activity feed
 // @access  Private
 exports.getRecentQueries = asyncHandler(async (req, res) => {
-  const isStudent = req.user.role === 'student';
-  const filter = isStudent ? { raisedBy: req.user._id } : {};
+  const isUser = req.user.role === 'user' || req.user.role === 'student';
+  const filter = isUser ? { raisedBy: req.user._id } : {};
 
   const queries = await Query.find(filter)
     .populate('raisedBy', 'name')

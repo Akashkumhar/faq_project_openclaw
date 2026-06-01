@@ -2,7 +2,7 @@
 
 /**
  * Reputation points awarded per action.
- * Students earn points; staff/admin earn recognition badges.
+ * Users earn points; staff/admin earn recognition badges.
  */
 const POINTS = {
   // Asking

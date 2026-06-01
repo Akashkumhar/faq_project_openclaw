@@ -3,8 +3,13 @@ import DashboardLayout from '../../layouts/DashboardLayout';
 import api from '../../api/apiClient';
 import { toast } from '../../components/common/Toast';
 
-const ROLES = ['student', 'support_staff', 'admin'];
-const ROLE_LABELS = { student: '🎓 Student', support_staff: '🛠️ Support Staff', admin: '⚙️ Admin' };
+const ROLES = ['user', 'support_staff', 'admin'];
+const ROLE_LABELS = {
+  user: '👤 User',
+  student: '👤 User',
+  support_staff: '🛠️ Support Staff',
+  admin: '⚙️ Admin',
+};
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState([]);
